@@ -4,6 +4,7 @@ import org.example.service.UtilizatorService;
 import org.example.service.PrietenieService;
 
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
@@ -129,6 +130,7 @@ public class UserInterface {
                         nrComunitati++;
                     System.out.println("Numarul de utilizatori este: " + nrComunitati);
                     GrafRetele grafRetele = new GrafRetele(nrComunitati+1);
+                    /*utilizatori.forEach(utilizator->);
                     for(Utilizator utilizator1:utilizatori)
                     {
                         for (Utilizator utilizator2:utilizatori)
@@ -144,7 +146,22 @@ public class UserInterface {
                                 }
                             }
                         }
-                    }
+                    }*/
+                    utilizatori.forEach(utilizator1 -> {
+                        utilizatori.forEach(utilizator2 -> {
+                            if (!Objects.equals(utilizator1.getId(), utilizator2.getId())) {
+                                Iterable<Prietenie> prietenii = prietenieService.findAllEntities();
+                                prietenii.forEach(prietenie5 -> {
+                                    if ((prietenie5.getId().getLeft().equals(utilizator1.getId()) && prietenie5.getId().getRight().equals(utilizator2.getId())) ||
+                                            (prietenie5.getId().getLeft().equals(utilizator2.getId()) && prietenie5.getId().getRight().equals(utilizator1.getId()))) {
+                                        grafRetele.adaugaMuchie(utilizator1.getId().intValue(), utilizator2.getId().intValue());
+                                        grafRetele.adaugaMuchie(utilizator2.getId().intValue(), utilizator1.getId().intValue());
+                                    }
+                                });
+                            }
+                        });
+                    });
+
                     int nrComponenteConexe = grafRetele.numarComponenteConexe();
 
 
@@ -156,12 +173,12 @@ public class UserInterface {
                     //cea mai sociabila comunitate este cea cu numarul maxim de prietenii
                     // daca sunt mai multe comunitati cu acelasi numar maxim de prietenii se afiseaza toate
                     // rezultatul va fi componenta conexa cu cele mai multe muchii
-                   /* int nrComunitati1 = 0;
+                   int nrComunitati1 = 0;
                     Iterable<Utilizator> utilizatori1 = utilizatorService.findAllEntities();
                     for(Utilizator ignored : utilizatori1)
                         nrComunitati1++;
                     System.out.println("Numarul de utilizatori este: " + nrComunitati1);
-                    GrafRetele grafRetele1 = new GrafRetele(nrComunitati1+1);
+                    /*GrafRetele grafRetele1 = new GrafRetele(nrComunitati1+1);
                     for(Utilizator utilizator1:utilizatori1)
                     {
                         for (Utilizator utilizator2:utilizatori1)
@@ -180,16 +197,58 @@ public class UserInterface {
                     }
                     grafRetele1.exploreazaComponente();
                     int componentaMaxima = grafRetele1.gasesteComponentaCuCeleMaiMulteNoduri();
-                    List<Integer>noduriInComponenta=grafRetele1.noduriInComponenta(componentaMaxima);
+                    List<Integer> noduriInComponenta=grafRetele1.noduriInComponenta(componentaMaxima);
                     System.out.println("Cea mai sociabila comunitate este: ");
                     System.out.println(noduriInComponenta);*/
+
+                    Graph graph = new Graph(nrComunitati1);
+                    /*for (Utilizator utilizator1:utilizatori1) {
+                        for (Utilizator utilizator2 : utilizatori1) {
+                            if (!Objects.equals(utilizator1.getId(), utilizator2.getId())) {
+                                Iterable<Prietenie> prietenii = prietenieService.findAllEntities();
+                                for (Prietenie prietenie5 : prietenii) {
+                                    if (prietenie5.getId().getLeft().equals(utilizator1.getId()) && prietenie5.getId().getRight().equals(utilizator2.getId()) || prietenie5.getId().getLeft().equals(utilizator2.getId()) && prietenie5.getId().getRight().equals(utilizator1.getId())) {
+                                        graph.addEdge(utilizator1.getId().intValue(), utilizator2.getId().intValue());
+                                        graph.addEdge(utilizator2.getId().intValue(), utilizator1.getId().intValue());
+                                    }
+                                }
+                            }
+                        }
+                    }*/
+                    utilizatori1.forEach(utilizator1 -> {
+                        utilizatori1.forEach(utilizator2 -> {
+                            if (!Objects.equals(utilizator1.getId(), utilizator2.getId())) {
+                                Iterable<Prietenie> prietenii = prietenieService.findAllEntities();
+                                prietenii.forEach(prietenie5 -> {
+                                    if ((prietenie5.getId().getLeft().equals(utilizator1.getId()) && prietenie5.getId().getRight().equals(utilizator2.getId())) ||
+                                            (prietenie5.getId().getLeft().equals(utilizator2.getId()) && prietenie5.getId().getRight().equals(utilizator1.getId()))) {
+                                        graph.addEdge(utilizator1.getId().intValue(), utilizator2.getId().intValue());
+                                        graph.addEdge(utilizator2.getId().intValue(), utilizator1.getId().intValue());
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    // int lungime=graph.findConnectedComponentWithLongestPath();
+                    List<Integer>longestPath=graph.findComponentWithLongestPath();
+                    System.out.println("Cea mai sociabila comunitate este: ");
+                    System.out.println(longestPath);
+
+                    //System.out.println("Lungimea maxima a componentei conexe este: "+lungime);
+
                     break;
+
                     case 7:
                        //afisati lista de utilizatori
                         Iterable<Utilizator> users = utilizatorService.findAllEntities();
-                        for (Utilizator user : users) {
+                        /*for (Utilizator user : users) {
                             System.out.println(user.toString());
-                        }
+                        }*/
+                        users.forEach(user -> {
+                            System.out.println(user.toString());
+                        });
+
                         break;
                 case 8:
                     //cautare utilizator dupa id
@@ -205,9 +264,13 @@ public class UserInterface {
                 case 9:
                     //afisare lista de prieteni
                     Iterable<Prietenie> prieteniis = prietenieService.findAllEntities();
-                    for (Prietenie prietenies : prieteniis) {
+                    /*for (Prietenie prietenies : prieteniis) {
                         System.out.println(prietenies.toString());
-                    }
+                    }*/
+                    prieteniis.forEach(prieteniee -> {
+                        System.out.println(prieteniee.toString());
+                    });
+
                     break;
                 case 0:
                     running = false;
